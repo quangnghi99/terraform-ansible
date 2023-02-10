@@ -1,0 +1,7 @@
+---
+# cofigure ansible engine and nodes with users and access
+
+- hosts: all
+  become: true
+  vars:
+    devops_public_key: ""
