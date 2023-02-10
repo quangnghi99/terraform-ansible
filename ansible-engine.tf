@@ -3,7 +3,7 @@ resource "aws_instance" "ansible-engine" {
   ami           = data.aws_ami.ami.id
   instance_type = "t2.micro"
   key_name      = aws_key_pair.key_pair.key_name
-  security_groups = [aws_security_group.ansible_access.id]
+  vpc_security_group_ids = [aws_security_group.ansible_access.id]
   user_data       = file("user-data-ansible-engine.sh")
 
   # Create inventory and ansible.cfg on ansible-engine
@@ -36,17 +36,17 @@ resource "aws_instance" "ansible-engine" {
     }
   }
 
-  # # copy engine-config.yaml
-  # provisioner "file" {
-  #   source      = "engine-config.yaml"
-  #   destination = "/home/ec2-user/engine-config.yaml"
-  #   connection {
-  #     type        = "ssh"
-  #     user        = "ec2-user"
-  #     private_key = file(pathexpand(var.ssh_key_pair))
-  #     host        = self.public_ip
-  #   }
-  # }
+  # copy engine-config.yaml
+  provisioner "file" {
+    source      = "engine-config.yaml"
+    destination = "/home/ec2-user/engine-config.yaml"
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = tls_private_key.key.private_key_pem
+      host        = self.public_ip
+    }
+  }
 
   # # Execute Ansible Playbook
   # provisioner "remote-exec" {

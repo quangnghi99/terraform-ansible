@@ -3,6 +3,7 @@ provider "aws" {
 }
 
 variable "ansible_node_count" {
+  type = number
   default = 2
 }
 
@@ -26,7 +27,7 @@ data "aws_ami" "ami" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-2.0.*-x86_64-gp2"]
+    values = ["amzn2-ami-kernel-5.10-hvm-*-x86_64-gp2"]
   }
 
   owners = ["amazon"]
